@@ -1,7 +1,9 @@
+import DefaultLayout from "./layouts/DefaultLayout";
+
 function App() {
   return (
     <div>
-      <h1>Benvenuto nella Web App</h1>
+      <DefaultLayout />
     </div>
   );
 }

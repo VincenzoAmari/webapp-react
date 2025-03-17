@@ -1,19 +1,28 @@
-import DefaultLayout from "./layouts/DefaultLayout";
-import { Routes, Route, BrowserRouter } from "react-router-dom";
-import HomePage from "./pages/HomePage";
-import MoviePage from "./pages/MoviePage";
+import express from "express";
+import movieRouter from "./routers/movieRouter.js";
+import setImagePath from "./middlewares/imagePath.js";
+import cors from "cors";
 
-function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route element={<DefaultLayout />}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/movies/:id" element={<MoviePage />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  );
-}
+const app = express();
+const port = 3000;
 
-export default App;
+// Configura CORS per consentire richieste da http://localhost:5173
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+  })
+);
+
+app.use(express.static("public"));
+app.use(express.json());
+app.use(setImagePath);
+
+app.get("/", (req, res) => {
+  res.send("Server Movies tutto a posto!");
+});
+
+app.use("/api/movies", movieRouter);
+
+app.listen(port, () => {
+  console.log(`Server Movies in funzione sulla porta: ${port}`);
+});

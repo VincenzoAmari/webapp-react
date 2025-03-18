@@ -4,17 +4,24 @@ import { useParams } from "react-router-dom";
 import ReviewCard from "../components/ReviewCard";
 
 export default function MoviePage() {
-  // Estrazione informazione (http://localhost:5173/movies/1)
   const { id } = useParams();
-
-  const [movie, setMovie] = useState({});
+  const [movie, setMovie] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Chiamata fetch per il film
   const fetchMovie = () => {
     axios
       .get(`http://localhost:3000/api/movies/${id}`)
-      .then((res) => setMovie(res.data))
-      .catch((error) => console.log(error));
+      .then((res) => {
+        setMovie(res.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setError("Errore nel caricamento del film");
+        setLoading(false);
+      });
   };
 
   // Invocazione chiamata al caricamento del componente
@@ -27,20 +34,24 @@ export default function MoviePage() {
     });
   };
 
+  if (loading) return <p>Caricamento...</p>;
+  if (error) return <p>{error}</p>;
+  if (!movie) return <p>Film non trovato</p>;
+
   return (
     <>
-      <h1>{movie?.title}</h1>
-      {movie?.image && (
+      <h1>{movie.title}</h1>
+      {movie.image && (
         <img
           src={movie.image}
           alt={movie.title}
           style={{ maxWidth: "300px" }}
         />
       )}
-      <p>Direttore: {movie?.director}</p>
-      <p>Anno: {movie?.release_year}</p>
-      <p>Genere: {movie?.genre}</p>
-      <p>Abstract: {movie?.abstract}</p>
+      <p>Direttore: {movie.director}</p>
+      <p>Anno: {movie.release_year}</p>
+      <p>Genere: {movie.genre}</p>
+      <p>Abstract: {movie.abstract}</p>
 
       <section>
         <h4>Recensioni della community</h4>

@@ -1,8 +1,29 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
+
 export default function HomePage() {
-  const movies = [
-    { id: 6, title: "The Matrix", director: "Wachowski", release_year: 1999 },
-    { id: 7, title: "Inception", director: "Nolan", release_year: 2010 },
-  ];
+  const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/api/movies")
+      .then((response) => {
+        console.log("Dati ricevuti:", response.data);
+        setMovies(response.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Errore dettagliato:", err.message);
+        console.error("Risposta del server:", err.response);
+        setError("Errore nel caricamento dei film: " + err.message);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <p>Caricamento...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <div>

@@ -1,42 +1,43 @@
-import { useEffect, useState } from "react";
+import MovieCard from "../components/MovieCard";
 import axios from "axios";
+import { useState, useEffect } from "react";
 
 export default function HomePage() {
   const [movies, setMovies] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
-  useEffect(() => {
+  // Funzione fetch per i film
+  const fetchMovies = () => {
+    console.log("Fetching movies...");
+
     axios
       .get("http://localhost:3000/api/movies")
-      .then((response) => {
-        console.log("Dati ricevuti:", response.data);
-        setMovies(response.data);
-        setLoading(false);
+      .then((res) => {
+        setMovies(res.data);
       })
-      .catch((err) => {
-        console.error("Errore dettagliato:", err.message);
-        console.error("Risposta del server:", err.response);
-        setError("Errore nel caricamento dei film: " + err.message);
-        setLoading(false);
+      .catch((error) => {
+        console.log(error);
       });
-  }, []);
+  };
 
-  if (loading) return <p>Caricamento...</p>;
-  if (error) return <p>{error}</p>;
+  // Funzione per il rendering delle card dei film
+  const renderMovies = () => {
+    return movies.map((movie) => {
+      return (
+        <div className="col" key={movie.id}>
+          <MovieCard movie={movie} />
+        </div>
+      );
+    });
+  };
+
+  // Invocazione chiamata al caricamento del componente
+  useEffect(fetchMovies, []);
 
   return (
-    <div>
-      <h1>Home Page - Lista dei Film</h1>
-      <ul className="list-group">
-        {movies.map((movie) => (
-          <li key={movie.id} className="list-group-item">
-            <h2>{movie.title}</h2>
-            <p>Direttore: {movie.director}</p>
-            <p>Anno: {movie.release_year}</p>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <>
+      <h1 className="text-primary">Lista dei Film</h1>
+      <h2>Tutti i film disponibili</h2>
+      <div className="row row-cols-3">{renderMovies()}</div>
+    </>
   );
 }

@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function MovieCard({ movie }) {
   return (
     <div className="card">
@@ -10,7 +12,9 @@ export default function MovieCard({ movie }) {
         />
       )}
       <div className="card-body">
-        <h3 className="card-title">{movie.title}</h3>
+        <h3 className="card-title">
+          <Link to={`/movies/${movie.id}`}>{movie.title}</Link>
+        </h3>
         <p className="card-text">Direttore: {movie.director}</p>
         <p className="card-text">Anno: {movie.release_year}</p>
       </div>

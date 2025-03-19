@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ReviewCard from "../components/ReviewCard";
+import ReviewForm from "../components/ReviewForm";
 
 export default function MoviePage() {
   const { id } = useParams();
@@ -9,7 +10,7 @@ export default function MoviePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Chiamata fetch per il film
+  // Chiamata per il film
   const fetchMovie = () => {
     axios
       .get(`http://localhost:3000/api/movies/${id}`)
@@ -22,6 +23,14 @@ export default function MoviePage() {
         setError("Errore nel caricamento del film");
         setLoading(false);
       });
+  };
+
+  // aggiungere una nuova recensione alla lista
+  const handleReviewAdded = (newReview) => {
+    setMovie((prevMovie) => ({
+      ...prevMovie,
+      reviews: [...(prevMovie.reviews || []), newReview],
+    }));
   };
 
   // Invocazione chiamata al caricamento del componente
@@ -60,6 +69,7 @@ export default function MoviePage() {
         ) : (
           <p>Nessuna recensione disponibile</p>
         )}
+        <ReviewForm movieId={id} onReviewAdded={handleReviewAdded} />
       </section>
     </>
   );

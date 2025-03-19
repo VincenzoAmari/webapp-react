@@ -46,7 +46,7 @@ export default function ReviewForm({ movieId, onReviewAdded }) {
       </div>
       <div className="mb-3">
         <label htmlFor="vote" className="form-label">
-          Voto (1-10)
+          Voto (1-5)
         </label>
         <input
           type="number"
@@ -55,7 +55,7 @@ export default function ReviewForm({ movieId, onReviewAdded }) {
           value={vote}
           onChange={(e) => setVote(e.target.value)}
           min="1"
-          max="10"
+          max="5"
           required
         />
       </div>

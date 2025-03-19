@@ -6,15 +6,16 @@ import ReviewForm from "../components/ReviewForm";
 
 export default function MoviePage() {
   const { id } = useParams();
+  const movieId = parseInt(id); // Converti id in numero
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Chiamata per il film
   const fetchMovie = () => {
     axios
-      .get(`http://localhost:3000/api/movies/${id}`)
+      .get(`http://localhost:3000/api/movies/${movieId}`)
       .then((res) => {
+        console.log("Dati del film:", res.data);
         setMovie(res.data);
         setLoading(false);
       })
@@ -25,18 +26,8 @@ export default function MoviePage() {
       });
   };
 
-  // aggiungere una nuova recensione alla lista
-  const handleReviewAdded = (newReview) => {
-    setMovie((prevMovie) => ({
-      ...prevMovie,
-      reviews: [...(prevMovie.reviews || []), newReview],
-    }));
-  };
+  useEffect(fetchMovie, [movieId]);
 
-  // Invocazione chiamata al caricamento del componente
-  useEffect(fetchMovie, [id]);
-
-  // Rendering delle recensioni
   const renderReviews = () => {
     return movie.reviews?.map((review) => {
       return <ReviewCard key={review.id} review={review} />;
@@ -69,7 +60,12 @@ export default function MoviePage() {
         ) : (
           <p>Nessuna recensione disponibile</p>
         )}
-        <ReviewForm movieId={id} onReviewAdded={handleReviewAdded} />
+      </section>
+
+      <section>
+        {movieId && (
+          <ReviewForm movie_id={movieId} reloadReviews={fetchMovie} />
+        )}
       </section>
     </>
   );

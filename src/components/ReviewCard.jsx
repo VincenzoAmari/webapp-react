@@ -4,6 +4,7 @@ export default function ReviewCard({ review }) {
       <div className="card-body">
         <h5 className="card-title">{review.name}</h5>
         <p className="card-text">Voto: {review.vote}</p>
+        <p className="card-text">{review.text}</p>
       </div>
     </div>
   );

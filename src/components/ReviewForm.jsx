@@ -2,6 +2,8 @@ import axios from "axios";
 import { useState } from "react";
 
 export default function ReviewForm({ movie_id, reloadReviews }) {
+  console.log("Valore di movie_id:", movie_id);
+
   const endpoint = `http://localhost:3000/api/movies/${movie_id}/reviews`;
 
   const initialValue = {
@@ -16,33 +18,44 @@ export default function ReviewForm({ movie_id, reloadReviews }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validazione dei campi
     if (!formData.name || !formData.vote || !formData.text) {
       setError("Nome, voto e testo sono obbligatori");
       return;
     }
 
-    // Validazione del voto
     const vote = parseInt(formData.vote);
     if (vote < 1 || vote > 5) {
       setError("Il voto deve essere compreso tra 1 e 5");
       return;
     }
 
+    const dataToSend = {
+      name: formData.name,
+      vote: vote,
+      text: formData.text,
+    };
+
+    console.log("Dati inviati:", dataToSend);
+
     axios
-      .post(endpoint, formData, {
+      .post(endpoint, dataToSend, {
         headers: {
           "Content-Type": "application/json",
         },
       })
-      .then(() => {
+      .then((response) => {
+        console.log("Risposta dal server:", response.data);
         setFormData(initialValue);
         setError(null);
         reloadReviews();
       })
       .catch((err) => {
-        console.log(err);
-        setError("Errore durante l'invio della recensione");
+        console.error("Errore durante l'invio:", err);
+        console.error("Dettagli errore:", err.response);
+        setError(
+          "Errore durante l'invio della recensione: " +
+            (err.response?.data?.error || err.message)
+        );
       });
   };
 

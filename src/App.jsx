@@ -1,14 +1,12 @@
-import { createContext, useContext, useState } from "react"; //funzioni per il Context
+import { createContext, useContext, useState } from "react";
 import DefaultLayout from "./layouts/DefaultLayout";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import MoviePage from "./pages/MoviePage";
-import Loader from "./components/Loader";
+import CreateMoviePage from "./pages/CreateMoviePage";
 
-// Context
 const LoaderContext = createContext();
 
-// Hook personalizzato per usare il Context
 export function useLoader() {
   const context = useContext(LoaderContext);
   if (!context) {

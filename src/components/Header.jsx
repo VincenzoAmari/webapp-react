@@ -8,6 +8,9 @@ export default function Header() {
           <NavLink className="nav-item nav-link" to="/">
             Home
           </NavLink>
+          <NavLink className="nav-item nav-link" to="/movies/create">
+            Crea Film
+          </NavLink>
         </div>
       </nav>
     </header>

@@ -3,30 +3,32 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ReviewCard from "../components/ReviewCard";
 import ReviewForm from "../components/ReviewForm";
+import { useLoader } from "../App";
 
 export default function MoviePage() {
   const { id } = useParams();
-  const movieId = parseInt(id); // Converti id in numero
+  const movieId = parseInt(id);
   const [movie, setMovie] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { setIsLoading } = useLoader();
 
   const fetchMovie = () => {
+    setIsLoading(true);
     axios
       .get(`http://localhost:3000/api/movies/${movieId}`)
       .then((res) => {
         console.log("Dati del film:", res.data);
         setMovie(res.data);
-        setLoading(false);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
         setError("Errore nel caricamento del film");
-        setLoading(false);
+        setIsLoading(false);
       });
   };
 
-  useEffect(fetchMovie, [movieId]);
+  useEffect(fetchMovie, [movieId, setIsLoading]);
 
   const renderReviews = () => {
     return movie.reviews?.map((review) => {
@@ -34,7 +36,6 @@ export default function MoviePage() {
     });
   };
 
-  if (loading) return <p>Caricamento...</p>;
   if (error) return <p>{error}</p>;
   if (!movie) return <p>Film non trovato</p>;
 

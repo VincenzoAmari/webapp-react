@@ -1,30 +1,30 @@
 import MovieCard from "../components/MovieCard";
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { useLoader } from "../App";
 
 export default function HomePage() {
   const [movies, setMovies] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { setIsLoading } = useLoader();
 
-  // Funzione fetch per i film
   const fetchMovies = () => {
     console.log("Fetching movies...");
 
+    setIsLoading(true);
     axios
       .get("http://localhost:3000/api/movies")
       .then((res) => {
         setMovies(res.data);
-        setLoading(false);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
         setError("Errore nel caricamento dei film");
-        setLoading(false);
+        setIsLoading(false);
       });
   };
 
-  // Funzione per il rendering delle card dei film
   const renderMovies = () => {
     return movies.map((movie) => {
       return (
@@ -35,10 +35,8 @@ export default function HomePage() {
     });
   };
 
-  // Invocazione chiamata al caricamento del componente
   useEffect(fetchMovies, []);
 
-  if (loading) return <p>Caricamento...</p>;
   if (error) return <p>{error}</p>;
 
   return (

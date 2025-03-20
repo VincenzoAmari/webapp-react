@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
+import { useLoader } from "../App";
 
 export default function ReviewForm({ movie_id, reloadReviews }) {
   console.log("Valore di movie_id:", movie_id);
@@ -7,13 +8,14 @@ export default function ReviewForm({ movie_id, reloadReviews }) {
   const endpoint = `http://localhost:3000/api/movies/${movie_id}/reviews`;
 
   const initialValue = {
-    name: "",
-    text: "",
-    vote: "",
+    name: "Anonimo",
+    text: "Ottimo film!",
+    vote: 4,
   };
 
   const [formData, setFormData] = useState(initialValue);
   const [error, setError] = useState(null);
+  const { setIsLoading } = useLoader();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -37,6 +39,7 @@ export default function ReviewForm({ movie_id, reloadReviews }) {
 
     console.log("Dati inviati:", dataToSend);
 
+    setIsLoading(true);
     axios
       .post(endpoint, dataToSend, {
         headers: {
@@ -47,6 +50,7 @@ export default function ReviewForm({ movie_id, reloadReviews }) {
         console.log("Risposta dal server:", response.data);
         setFormData(initialValue);
         setError(null);
+        setIsLoading(false);
         reloadReviews();
       })
       .catch((err) => {
@@ -56,6 +60,7 @@ export default function ReviewForm({ movie_id, reloadReviews }) {
           "Errore durante l'invio della recensione: " +
             (err.response?.data?.error || err.message)
         );
+        setIsLoading(false);
       });
   };
 
